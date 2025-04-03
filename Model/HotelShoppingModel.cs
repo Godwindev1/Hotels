@@ -94,7 +94,6 @@ namespace Hotel.model
 
                 var ResponseJSON = await ForwardRequest(URLqueryParameters);
 
-                Console.WriteLine(ResponseJSON);
 
                 _logger.LogMessage(Logmessages.GetMessage(), classInformation.Key, Severity.INFO, classInformation);
                 return await MapDataToOffersDto(ResponseJSON);

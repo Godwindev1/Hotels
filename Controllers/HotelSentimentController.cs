@@ -7,6 +7,7 @@ using Hotel.SyncServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hotel.Controllers
 {
@@ -51,8 +52,7 @@ namespace Hotel.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, "Server Error ");
+                return StatusCode(500, $"Server Error: {ex.Message} ");
             }
         }
     }

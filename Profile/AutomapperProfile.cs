@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Hotel.Data.Autocomplete;
 using Hotel.Data.Rating;
+using Hotel.Dto.autocomplete.dto;
 using Hotel.Dto.List.dto;
 using Hotel.Dto.offers.dto;
 using Hotel.Dto.ratings.dto;
@@ -16,6 +18,7 @@ namespace Hotel.MappingProfile
             CreateMap<Hotel_d, HotelListReadDto>();
             CreateMap<HotelOffer, HotelOfferReadDto>().ForPath(x => x.room.typeEstimated, x => x.MapFrom(x => x.room.typeEstimated));
             CreateMap<HotelSentiments, HotelSentimentsReadDto>();
+            CreateMap<AutoCompleteInfo, AutoCompleteReadDto>();
         }
     }
 }

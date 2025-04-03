@@ -80,6 +80,12 @@
         public const string includeClosed = "includeClosed";
       
         public const string bestRateOnly = "bestRateOnly";
+      
+        public const string keyword = "keyword";
+        public const string subType = "subType";
+        public const string countryCode = "countryCode";
+        public const string lang = "lang";
+        public const string max = "max";
 
         /// <summary>
         /// Room quantity.
@@ -93,6 +99,7 @@
         public const string HotelByGeoCode = "v1/reference-data/locations/hotels/by-geocode";
        
         public const string ShoppingOffersHotelID = "v2/shopping/hotel-offers";
+        public const string AutoComplete = "v1/reference-data/locations/hotel";
     }
 
 

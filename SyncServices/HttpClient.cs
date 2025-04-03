@@ -20,8 +20,11 @@ namespace Hotel.SyncServices
 
         public async Task<AccessToken> RetrieveAccessToken()
         {
-            var ClientID = _configuration["clientdetails:client_id"];
-            var ClientSecret = _configuration["clientdetails:client_secret"];
+            var ClientID = Environment.GetEnvironmentVariable("client_id");
+            var ClientSecret = Environment.GetEnvironmentVariable("client_secret");
+
+            Console.WriteLine($"CLientID: {ClientID} ClientSecret: {ClientSecret}");
+
             HttpResponseMessage Result = null;
             AccessToken Access = new AccessToken() ;
             try
