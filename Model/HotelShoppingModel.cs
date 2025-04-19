@@ -110,9 +110,11 @@ namespace Hotel.model
 
 
 
-        private async Task<string> ForwardRequest(HttpMessageHeaders URLqueryParameters)
+        private async Task<string> ForwardRequest(HttpMessageHeaders URLqueryParameters, string offerID = null)
         {
-            var HttpRequest = new Request(Constants.GET, AmadeusHotelConstants.ShoppingOffersHotelID,
+            string ApiURL = (offerID == null ? AmadeusHotelConstants.ShoppingOffersHotelID : AmadeusHotelConstants.ShoppingOffersHotelID + $"/{offerID}");
+
+            var HttpRequest = new Request(Constants.GET, ApiURL,
                  URLqueryParameters, null, Constants.BASEURL);
 
             var ResponseJSON = await _httpClient.SendHttpRequest(Request.ConvertToHttpRequestMessage(HttpRequest));
@@ -132,6 +134,8 @@ namespace Hotel.model
                 Logmessages.AddJson(" Request Error", ResponseJson);
               
                 _logger.LogMessage(Logmessages.GetMessage(), classInformation.Key, Severity.INFO, classInformation);
+
+                return null;
             }
 
 

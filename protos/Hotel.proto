@@ -1,0 +1,303 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Hotels";
+
+package Hotels;
+
+service HotelListService_proto {
+  rpc GetHotelByID (HotelID) returns (GRPCHotelListReadDto);
+  rpc ListHotelsByGeoCode (HotelGeoRequest) returns (HotelListResponse);
+  rpc ListHotelsByCityCode (HotelCityRequest) returns (HotelListResponse);
+}
+
+
+message HotelCityRequest {
+	string IATACityCode = 1;
+	optional int32 radius = 2;
+	optional string unit = 3; 
+	repeated string Amentities = 4;
+	repeated string Ratings = 5;
+}
+
+message HotelGeoRequest {
+  string lat = 1;         
+  string longitude = 2;   
+  optional int32 radius = 3;      
+  optional string unit = 4;       
+  repeated string amenities = 5;
+  repeated string ratings = 6;  
+}
+
+message Empty {
+}
+
+message  HotelID {
+	string HotelID = 1;
+}
+
+message GRPCHotelListReadDto {
+  string name = 1;
+  string hotelId = 2;
+  repeated string amenities = 3;
+}
+
+
+message HotelListResponse {
+  repeated GRPCHotelListReadDto hotels = 1;
+}
+
+
+//HOTEL SHOPPING service
+service Shopping_proto
+{
+	rpc  GetOfferPrice (OFFERID) returns (GRPCHotelOfferReadDtoRoot);
+    rpc  ShopHotelOffers (HotelOffersRequestData) returns (GRPCHotelOfferReadDtoRoot);
+}
+
+
+message HotelOffersRequestData
+{
+    string hotelIds = 1;
+    string checkInDate = 2;
+    string checkOutDate = 3; 
+    string priceRange = 4;
+    string currency= 5;
+    optional string paymentPolicy = 6; 
+    optional string boardType = 7;  
+    optional int32 adults = 8;
+    optional int32 roomQuantity = 9;
+    optional bool includeClosed = 10;
+    optional bool bestRateOnly = 11;
+}
+
+
+message OFFERID
+{
+    string offerid = 1;
+}
+
+message GRPCHotelProduct_EstimatedRoomType 
+{
+    string category  = 1;
+    int32 beds = 2;
+    string bedType = 3;
+}
+
+
+message GRPCRoomDetailsReadDto
+{
+    GRPCHotelProduct_EstimatedRoomType typeEstimated = 1;
+}
+
+message GRPCHotelProduct_Guests
+{
+   int32 adults = 1;
+   repeated int32 childAges = 2;
+}
+
+message GRPCTax
+{
+ string Description = 1;
+
+
+ string Amount = 2 ;
+
+ string Currency = 3 ;
+
+
+ string Code  = 4;
+
+
+ string Percentage = 5 ;
+
+
+ bool Included  = 6;
+
+
+ string PricingFrequency = 7; 
+
+
+ string PricingMode = 8 ;
+}
+
+message GRPCmarkup
+{
+    string amount = 1;
+}
+
+message GRPCPrice{
+         
+         string Description = 1 ;
+
+     
+         string Currency = 2 ;
+
+         string SellingTotal = 3 ;
+
+       
+         string Total = 4;
+
+       
+         string Base  = 5;
+
+     
+         repeated string Markups = 6 ; 
+}
+
+
+message GRPCPriceVariation
+{
+    
+        string Description  = 1;
+
+      
+        string StartDate  = 2;
+
+        string EndDate  = 3;
+
+      
+        string Currency  = 4;
+
+       
+        string SellingTotal = 5;
+
+       
+        string Total =  6 ;
+
+      
+        string Base = 7 ;
+
+      
+        repeated string Markups = 8 ; 
+}
+
+message GRPCHotelProduct_PriceVariations
+{
+    GRPCPrice average = 1;
+    repeated GRPCPriceVariation changes = 2;
+}
+
+message GRPCHotelProduct_price
+{
+        string currency  = 1;
+        string sellingTotal = 2 ;
+        string total = 3 ;
+        string Base  = 4;
+        repeated GRPCTax taxes = 5 ;
+        repeated GRPCmarkup markups = 6;
+        GRPCHotelProduct_PriceVariations variations = 7 ;
+}
+
+message GRPCHotelOfferReadDto
+{
+	string id = 1; 
+
+    string checkInDate  = 2;
+    string checkOutDate  = 3;
+
+    string roomQuantity  = 4;
+
+    repeated string boardType  = 5;
+
+    GRPCRoomDetailsReadDto room  = 6;
+
+    GRPCHotelProduct_Guests guests  = 7;
+
+    GRPCHotelProduct_price price  = 8;
+}
+
+message GRPCHotelOfferReadDtoRoot 
+{
+    repeated GRPCHotelOfferReadDto data = 1;
+    bool Available = 2;
+    GRPCHotelListReadDto hotel = 3;
+}
+
+
+
+//AUTOCOMPLETE MODEL API rpc
+
+service AutocompleteService_proto
+{
+    rpc CompleteName(AutocomleteRequestData) returns (GRPCAutoCompleteReadDto);
+}
+
+message AutocomleteRequestData
+{
+    string keyword = 1;
+    string subType = 2;
+    string countryCode = 3; 
+    string lang = 4; 
+    int32 Max = 5;
+}
+
+message GRPCAddress
+{
+ string countryCode = 1;
+}
+
+message GRPCAutoCompleteReadDto
+{
+    string name = 1 ;
+    string iataCode = 2 ;
+
+    string subType = 3;
+
+    int32 relevance  = 4; 
+    repeated string hotelIds  = 5;
+    GRPCAddress Address = 6;
+}
+
+
+//HOTEL SENTIMENTS GRPC service
+
+    message GRPCSentiments{
+         int32 sleepQuality  = 1;
+
+         int32 service  = 2;
+
+         int32 facilities  = 3;
+
+         int32 roomComforts  = 4;
+
+         int32 valueForMoney  = 5;
+
+         int32 catering  = 6;
+
+         int32 swimmingPool  = 7;
+
+         int32 location  = 8;
+
+         int32 internet  = 9;
+
+         int32 pointsOfInterest  = 10;
+
+         int32 staff  = 11;
+    }
+
+
+
+message GRPCListOfHotelSentiments
+{
+    message GRPCHotelSentimentsReadDto
+    {
+       GRPCSentiments sentiments = 1;
+       string hotelId = 2;
+       int32 overallRating = 3;
+
+       int32 numberOfRatings = 4 ;
+    }
+
+    repeated GRPCHotelSentimentsReadDto HotelSentiments = 1;
+}
+
+message SentimentsRequest
+{
+    string CommaSeperatedIDs = 1;
+}
+
+
+service GRPCHotelSentimentsService 
+{
+    rpc GetHotelSentiments(SentimentsRequest) returns (GRPCListOfHotelSentiments);
+}

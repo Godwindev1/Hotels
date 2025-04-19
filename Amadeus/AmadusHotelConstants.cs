@@ -98,7 +98,7 @@
         public const string HotelByCityURL = "v1/reference-data/locations/hotels/by-city";
         public const string HotelByGeoCode = "v1/reference-data/locations/hotels/by-geocode";
        
-        public const string ShoppingOffersHotelID = "v2/shopping/hotel-offers";
+        public const string ShoppingOffersHotelID = "v3/shopping/hotel-offers";
         public const string AutoComplete = "v1/reference-data/locations/hotel";
     }
 

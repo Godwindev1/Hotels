@@ -94,11 +94,11 @@ namespace Hotel.model
                 URLqueryParameters.Add(AmadeusHotelConstants.Radius, $"{radius}");
                 URLqueryParameters.Add(AmadeusHotelConstants.RadiusUnit, $"{unit}");
 
-                if (Amentities != null)
+                if (Amentities != null && Amentities.Count != 0)
                 {
                     URLqueryParameters.Add(AmadeusHotelConstants.Amenities, ParseListAsJsonText(Amentities));
                 }
-                if (Ratings != null)
+                if (Ratings != null && Ratings.Count != 0)
                 {
                     URLqueryParameters.Add(AmadeusHotelConstants.Ratings, ParseListAsJsonText(Ratings));
                 }
@@ -137,6 +137,7 @@ namespace Hotel.model
 
         public async Task<IEnumerable<HotelListReadDto>> ListHotelsByCityCode(string? IATACityCode, int radius = 1, string unit = "KM", List<string> Amentities = null, List<string>  Ratings = null)
         {
+
             MessageStructuring Logmessages = new MessageStructuring();
 
             Logmessages.AddMessage("ListHotelsByCityCode\"");
@@ -152,11 +153,11 @@ namespace Hotel.model
                 URLqueryParameters.Add(AmadeusHotelConstants.Radius, $"{radius}");
                 URLqueryParameters.Add(AmadeusHotelConstants.RadiusUnit, $"{unit}");
 
-                if(Amentities != null) 
+                if(Amentities != null && Amentities.Count != 0) 
                 { 
                     URLqueryParameters.Add(AmadeusHotelConstants.Amenities, ParseListAsJsonText(Amentities));
                 }
-                if (Ratings != null)
+                if (Ratings != null && Ratings.Count != 0)
                 {
                     URLqueryParameters.Add(AmadeusHotelConstants.Ratings, ParseListAsJsonText(Ratings));
                 }
