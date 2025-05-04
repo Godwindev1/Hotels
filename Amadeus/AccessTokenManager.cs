@@ -4,9 +4,9 @@ using System.Runtime.Caching;
 
 namespace Hotel.Amadeus
 {
-    public class AccessTokenManager
+    public class AccessTokenManager : BackgroundService
     {
-        private  MemoryCache AccessTokenTimedCache;
+        private  MemoryCache AccessTokenTimedCache = null;
         private  AccessToken accessToken;
         private  HttpClientImplementation _client;
 
@@ -15,7 +15,34 @@ namespace Hotel.Amadeus
             _client = (HttpClientImplementation)client;
         }
 
-        private  async Task<AccessToken> RetrieveToken()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            bool tokenRetrievedDelay = false;
+           
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                Console.WriteLine("Checking for Access Token...");
+
+                if (AccessTokenTimedCache == null || AccessTokenTimedCache.Get("AccessToken") == null)
+                {
+                    Console.WriteLine("Access Token is null or expired, retrieving new token...");
+
+                    await InitilizeRequestsWithBearerToken();
+
+                    tokenRetrievedDelay = true;
+                    await Task.Delay(TimeSpan.FromMinutes(28), stoppingToken);
+                    tokenRetrievedDelay = false ;
+                }
+
+                if (!tokenRetrievedDelay)
+                {
+                    await Task.Delay(5000, stoppingToken); 
+                }
+            }
+
+        }
+
+        private    async Task<AccessToken> RetrieveToken()
         {
             accessToken = await _client.RetrieveAccessToken();
             CacheAccessToken();
@@ -23,27 +50,27 @@ namespace Hotel.Amadeus
             return accessToken;
         }
 
-        private void  CacheAccessToken()
+        private  void CacheAccessToken()
         {
             AccessTokenTimedCache = MemoryCache.Default;
           
-           CacheItemPolicy ExpirationPolicy = new CacheItemPolicy
-           {
-             AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
-           };
+            CacheItemPolicy ExpirationPolicy = new CacheItemPolicy
+            {
+              AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(30)
+            };
 
             AccessTokenTimedCache.Add("AccessToken", accessToken.access_token, ExpirationPolicy);
 
         }
 
 
-        private AccessToken RetrieveTokenFromCache()
+        private  AccessToken RetrieveTokenFromCache()
         {
            return  AccessTokenTimedCache.Get("AccessToken") as AccessToken ?? null;
         }
 
 
-        public async Task<AccessToken> GetAccessBearerToken()
+        public  async Task<AccessToken> GetAccessBearerToken()
         {
             if(AccessTokenTimedCache == null)
             {
@@ -55,7 +82,7 @@ namespace Hotel.Amadeus
             }
         }
 
-        public async Task InitilizeRequestsWithBearerToken()
+        public  async Task InitilizeRequestsWithBearerToken()
         {
             Request.InitializeBearerToken(await GetAccessBearerToken());
         }

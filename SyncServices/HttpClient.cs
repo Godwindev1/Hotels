@@ -20,11 +20,11 @@ namespace Hotel.SyncServices
 
         public async Task<AccessToken> RetrieveAccessToken()
         {
-            // var ClientID = Environment.GetEnvironmentVariable("client_id");
-            // var ClientSecret = Environment.GetEnvironmentVariable("client_secret");
+            var ClientID = Environment.GetEnvironmentVariable("client_id");
+            var ClientSecret = Environment.GetEnvironmentVariable("client_secret");
 
-            var ClientID = _configuration["clientdetails:client_id"];
-            var ClientSecret = _configuration["clientdetails:client_secret"];
+            //var ClientID = _configuration["clientdetails:client_id"];
+            //var ClientSecret = _configuration["clientdetails:client_secret"];
 
             Console.WriteLine($"CLientID: {ClientID} ClientSecret: {ClientSecret}");
 
@@ -39,7 +39,9 @@ namespace Hotel.SyncServices
 
                 Request AccessTokenRequest = new Request("POST", Constants.AUTH_URL, null, MessageBody, Constants.BASEURL);
 
+                Console.WriteLine("Sennding Request to Amadeus API for Access Token");
                 Result = await _httpClient.SendAsync(Request.ConvertToHttpRequestMessage(AccessTokenRequest));
+               
                 Console.WriteLine(await Result.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
