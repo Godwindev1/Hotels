@@ -17,32 +17,33 @@ namespace Hotel.Amadeus
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            bool tokenRetrievedDelay = false;
            
             while (!stoppingToken.IsCancellationRequested)
             {
+
                 Console.WriteLine("Checking for Access Token...");
+
+                bool ConditionResults = (AccessTokenTimedCache == null) || (AccessTokenTimedCache.Get("AccessToken") == null);
+
+                Console.WriteLine( $"Results COndition: {ConditionResults.ToString()}");
 
                 if (AccessTokenTimedCache == null || AccessTokenTimedCache.Get("AccessToken") == null)
                 {
                     Console.WriteLine("Access Token is null or expired, retrieving new token...");
 
+
                     await InitilizeRequestsWithBearerToken();
 
-                    tokenRetrievedDelay = true;
-                    await Task.Delay(TimeSpan.FromMinutes(28), stoppingToken);
-                    tokenRetrievedDelay = false ;
+                    await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
                 }
 
-                if (!tokenRetrievedDelay)
-                {
-                    await Task.Delay(5000, stoppingToken); 
-                }
+   
+                await Task.Delay(1000, stoppingToken); 
             }
 
         }
 
-        private    async Task<AccessToken> RetrieveToken()
+        private async Task<AccessToken> RetrieveToken()
         {
             accessToken = await _client.RetrieveAccessToken();
             CacheAccessToken();
@@ -72,7 +73,7 @@ namespace Hotel.Amadeus
 
         public  async Task<AccessToken> GetAccessBearerToken()
         {
-            if(AccessTokenTimedCache == null)
+            if(AccessTokenTimedCache == null || AccessTokenTimedCache.Get("AccessToken") == null)
             {
                return await RetrieveToken();
             }
@@ -84,6 +85,7 @@ namespace Hotel.Amadeus
 
         public  async Task InitilizeRequestsWithBearerToken()
         {
+            Request.ClearPreviousBearerToken();
             Request.InitializeBearerToken(await GetAccessBearerToken());
         }
 

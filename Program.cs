@@ -24,9 +24,9 @@ namespace Hotel
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-  
 
-              builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>().ConfigurePrimaryHttpMessageHandler(() =>
+
+             builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>().ConfigurePrimaryHttpMessageHandler(() =>
                   {
                       var handler = new HttpClientHandler();
 
@@ -48,7 +48,10 @@ namespace Hotel
                       };
 
                       return handler;
-                  }); 
+                  });  
+
+            builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
+
 
 
             builder.Services.AddEndpointsApiExplorer();
@@ -81,7 +84,7 @@ namespace Hotel
                     listenOptions.Protocols = HttpProtocols.Http1AndHttp2; // both HTTP/1.1 and HTTP/2
                     listenOptions.UseHttps(); // gRPC requires HTTPS
                 });
-            }); 
+            });  
 
             var app = builder.Build();
 
@@ -91,8 +94,9 @@ namespace Hotel
             app.MapGrpcService<AutocompleteService>();  // Register Autocomplete Grpc service
             app.MapGrpcService<HotelSentimentService>();  // Register Sentiments Grpc service
 
+            
             // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
+           // if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

@@ -44,7 +44,7 @@ namespace Hotel.Amadeus
 
             public HttpMessageHeaders? _params { get; set; }
 
-            public static AccessToken BearerToken { get; set; } = null;
+            public static AccessToken ? BearerToken { get; set; } = null;
 
 
             /// <summary>
@@ -81,6 +81,11 @@ namespace Hotel.Amadeus
             {
                 BearerToken = new AccessToken();
                 BearerToken.access_token = accessToken.access_token;
+            }
+
+            public static void ClearPreviousBearerToken()
+            {
+                BearerToken =  null;
             }
 
 
