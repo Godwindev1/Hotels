@@ -25,7 +25,6 @@ namespace Hotel
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 
-
              builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>().ConfigurePrimaryHttpMessageHandler(() =>
                   {
                       var handler = new HttpClientHandler();
@@ -48,7 +47,7 @@ namespace Hotel
                       };
 
                       return handler;
-                  });  
+                  });   
 
             builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
 
@@ -61,12 +60,13 @@ namespace Hotel
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddGrpc();  // Add gRPC
             builder.Services.AddHostedService<AccessTokenManager>();
+            builder.Services.AddHostedService<MessageQueueService>();
 
 
 
-            builder.WebHost.ConfigureKestrel(options =>
+             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.ConfigureHttpsDefaults(httpsOptions =>
+               options.ConfigureHttpsDefaults(httpsOptions =>
                 {                     
                     var certPath = "/etc/ssl/certs/tls.crt";
                     var keyPath =  "/etc/ssl/certs/tls.key";

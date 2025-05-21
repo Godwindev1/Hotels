@@ -3,6 +3,7 @@ using Grpc.Core;
 using Hotel.Logging;
 using Hotel.model;
 using Hotel.Model;
+using Hotel.Services.data;
 using Hotel.SyncServices;
 using Hotel.Utility;
 using Hotels;
@@ -17,6 +18,8 @@ namespace Hotel.Services
         IMapper mapper;
         private KeyBasedLogging _logger;
 
+        MessageQueueService RPCExceptionHandler;
+
         public AutocompleteService(IHttpClient client, IMapper mapper, KeyBasedLogging loging)
         {
             this.mapper = mapper;
@@ -29,20 +32,31 @@ namespace Hotel.Services
         {
             var Suggestions = await _model.CompleteName(Data.Keyword, Data.SubType, Data.CountryCode, Data.Lang, Data.Max);
 
-            if (Suggestions == null)
+
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (Suggestions == null)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
-
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
 
             return mapper.Map<Hotels.GRPCAutoCompleteReadDto>(Suggestions);

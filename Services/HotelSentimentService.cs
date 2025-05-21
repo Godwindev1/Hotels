@@ -5,6 +5,7 @@ using Hotel.Dto.ratings.dto;
 using Hotel.Logging;
 using Hotel.model;
 using Hotel.Model;
+using Hotel.Services.data;
 using Hotel.SyncServices;
 using Hotel.Utility;
 using Hotels;
@@ -32,28 +33,42 @@ namespace Hotel.Services
         {
             var results = await _model.GetHotelSentiments(RequestData.CommaSeperatedIDs);
 
-            if (results == null || results.Count == 0)
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (results == null || results.Count == 0)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
 
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
-            }
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
+                else
+                {
+                    GRPCListOfHotelSentiments MappedResult = new GRPCListOfHotelSentiments();
+                    MappedResult.HotelSentiments.AddRange(mapper.Map<RepeatedField<GRPCHotelSentimentsReadDto>>(results));
 
-            else
+                    return MappedResult;
+                }
+            }
+            catch (RpcException ex)
             {
-                 GRPCListOfHotelSentiments MappedResult = new GRPCListOfHotelSentiments();
-                MappedResult.HotelSentiments.AddRange(mapper.Map<RepeatedField<GRPCHotelSentimentsReadDto>>(results));
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
 
-                return  MappedResult;
+
+                await MessageQueueService.SendMessage(Struct);
             }
+
+
+            return null;
+        
 
         }
 

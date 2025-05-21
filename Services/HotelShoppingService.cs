@@ -2,6 +2,7 @@
 using Grpc.Core;
 using Hotel.Logging;
 using Hotel.model;
+using Hotel.Services.data;
 using Hotel.SyncServices;
 using Hotel.Utility;
 using Hotels;
@@ -30,20 +31,31 @@ namespace Hotel.Services
             var Offer = await _model.GetOfferPrice(ID.Offerid);
 
 
-            if (Offer == null)
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (Offer == null)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
 
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
 
             return mapper.Map<Hotels.GRPCHotelOfferReadDtoRoot>(Offer);
@@ -56,20 +68,30 @@ namespace Hotel.Services
             var Offers = await _model.ShopHotelOffers(Parameters.HotelIds, HelperMethods.EnsureDateFormat( Parameters.CheckInDate ), HelperMethods.EnsureDateFormat( Parameters.CheckOutDate ), Parameters.PriceRange, Parameters.Currency
                                 , Parameters.PaymentPolicy, Parameters.BoardType, Parameters.Adults, Parameters.RoomQuantity, Parameters.IncludeClosed, Parameters.BestRateOnly );
 
-            if (Offers == null)
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (Offers == null)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
 
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
 
             return mapper.Map<Hotels.GRPCHotelOfferReadDtoRoot>(Offers);

@@ -15,6 +15,7 @@ using AutoMapper;
 using Hotel.Logging;
 using Hotel.SyncServices;
 using Google.Protobuf.Collections;
+using Hotel.Services.data;
 
 namespace Hotel.Services
 {
@@ -37,20 +38,31 @@ namespace Hotel.Services
         {
             var Hotel = await _model.HotelByHotelID(ID.HotelID_);
 
-            if (Hotel == null)
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (Hotel == null)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
 
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
 
             return mapper.Map<Hotels.GRPCHotelListReadDto>(Hotel);
@@ -62,23 +74,33 @@ namespace Hotel.Services
         {
           var Hotels = await _model.ListHotelsByGeoCode(RequestParameters.Lat, RequestParameters.Longitude, RequestParameters.Radius, unit: RequestParameters.Unit
                                 , Amentities: RequestParameters.Amenities.ToList(), Ratings: RequestParameters.Ratings.ToList());
-
-            if (Hotels == null)
+            try
             {
-         
+                if (Hotels == null)
+                {
 
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
 
-                var trailers = new Metadata
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
+
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
 
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
 
 
@@ -98,21 +120,31 @@ namespace Hotel.Services
 
             var Hotels = await _model.ListHotelsByCityCode(RequestParameters.IATACityCode, RequestParameters.Radius, RequestParameters.Unit, RequestParameters.Amentities.ToList(), RequestParameters.Ratings.ToList());
 
-
-            if (Hotels == null)
+            try
             {
-                var message = _logger.RecieveMessage(Information.Key);
-                Console.WriteLine(message);
+                if (Hotels == null)
+                {
+                    var message = _logger.RecieveMessage(Information.Key);
+                    Console.WriteLine(message);
 
 
-                var trailers = new Metadata
+                    var trailers = new Metadata
                 {
                     { "error-code", "INTERNAL_SERVER_ERROR" },
                     { "error-info", $"{message}" }
                 };
 
-                throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                    throw new RpcException(new Status(StatusCode.Cancelled, "See Error Info "), trailers);
+                }
             }
+            catch (RpcException ex)
+            {
+                QueueMessage Struct = new QueueMessage();
+                Struct.AddMessage(ex.Trailers.GetValue("error-code") + " " + ex.Trailers.GetValue("error-info"));
+
+                await MessageQueueService.SendMessage(Struct);
+            }
+
 
             HotelListResponse response = new HotelListResponse();
 
