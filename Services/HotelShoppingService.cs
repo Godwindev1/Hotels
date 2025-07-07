@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Grpc.Core;
 using Hotel.Logging;
-using Hotel.model;
+using Hotel.Model.AmadeusV1;
 using Hotel.Services.data;
 using Hotel.SyncServices;
 using Hotel.Utility;

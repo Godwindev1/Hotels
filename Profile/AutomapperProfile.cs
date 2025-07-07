@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Google.Protobuf.Collections;
-using Hotel.Data.Autocomplete;
-using Hotel.Data.Rating;
-using Hotel.Dto.autocomplete.dto;
-using Hotel.Dto.List.dto;
-using Hotel.Dto.offers.dto;
-using Hotel.Dto.ratings.dto;
+using Hotel.Data.Amadeus.data.Autocomplete;
+using Hotel.Data.Amadeus.data.List;
+using Hotel.Data.Amadeus.data.Rating;
+using Hotel.Data.Amadeus.data.shopping;
+using Hotel.Dto.Amadeus.dto.autocomplete.dto;
+using Hotel.Dto.Amadeus.dto.List.dto;
+using Hotel.Dto.Amadeus.dto.offers.dto;
+using Hotel.Dto.Amadeus.dto.ratings.dto;
 using Hotel.model;
 using Hotel.Profile.Converters;
-using Hotel.Resource.HotelList;
-using Hotel.Resource.HotelOffers;
 using Hotels;
 using static Hotels.GRPCListOfHotelSentiments.Types;
 
@@ -23,10 +23,10 @@ namespace Hotel.MappingProfile
             CreateMap<HotelOffer, HotelOfferReadDto>().ForPath(x => x.room.typeEstimated, x => x.MapFrom(x => x.room.typeEstimated));
             CreateMap<HotelSentiments, HotelSentimentsReadDto>();
             CreateMap<AutoCompleteInfo, AutoCompleteReadDto>();
-            CreateMap<Hotel.Dto.List.dto.HotelListReadDto, Hotels.GRPCHotelListReadDto>();
-            CreateMap<Hotels.GRPCHotelListReadDto, Hotel.Dto.List.dto.HotelListReadDto>();
+            CreateMap<HotelListReadDto, Hotels.GRPCHotelListReadDto>();
+            CreateMap<Hotels.GRPCHotelListReadDto, HotelListReadDto>();
 
-            CreateMap<List<Hotel.Dto.List.dto.HotelListReadDto>, RepeatedField<Hotels.GRPCHotelListReadDto>>().ConvertUsing<ListToRepeatedConverter>();
+            CreateMap<List<HotelListReadDto>, RepeatedField<Hotels.GRPCHotelListReadDto>>().ConvertUsing<ListToRepeatedConverter>();
        
             CreateMap<HotelOfferReadDto, GRPCHotelOfferReadDto>().
                 ForMember(x => x.CheckInDate, z => z.MapFrom( y => y.checkInDate.ToString()))

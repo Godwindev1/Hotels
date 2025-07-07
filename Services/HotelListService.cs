@@ -10,12 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hotels;
-using Hotel.model;
 using AutoMapper;
 using Hotel.Logging;
 using Hotel.SyncServices;
 using Google.Protobuf.Collections;
 using Hotel.Services.data;
+using Hotel.Model.AmadeusV1;
 
 namespace Hotel.Services
 {

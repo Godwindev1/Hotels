@@ -1,5 +1,6 @@
 ﻿using Hotel.Amadeus;
 using Hotel.Data;
+using Hotel.Data.Amadeus.data;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -20,11 +21,11 @@ namespace Hotel.SyncServices
 
         public async Task<AccessToken> RetrieveAccessToken()
         {
-            var ClientID = Environment.GetEnvironmentVariable("client_id");
-            var ClientSecret = Environment.GetEnvironmentVariable("client_secret");
+            //var ClientID = Environment.GetEnvironmentVariable("client_id");
+            //var ClientSecret = Environment.GetEnvironmentVariable("client_secret");
 
-            //var ClientID = _configuration["clientdetails:client_id"];
-            //var ClientSecret = _configuration["clientdetails:client_secret"];
+            var ClientID = _configuration["clientdetails:client_id"];
+            var ClientSecret = _configuration["clientdetails:client_secret"];
 
             Console.WriteLine($"CLientID: {ClientID} ClientSecret: {ClientSecret}");
 

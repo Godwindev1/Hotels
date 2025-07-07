@@ -1,4 +1,4 @@
-﻿using Hotel.Data;
+﻿using Hotel.Data.Amadeus.data;
 
 namespace Hotel.SyncServices
 {

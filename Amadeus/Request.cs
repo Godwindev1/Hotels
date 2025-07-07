@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
-using Hotel.Data;
+using Hotel.Data.Amadeus.data;
 using Microsoft.VisualBasic;
 
 

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Google.Protobuf.Collections;
-using Hotel.Dto.List;
+using Hotel.Dto.Amadeus.dto.List.dto;
+using Hotel.Dto.Amadeus.dto.ratings.dto;
 using static Hotels.GRPCListOfHotelSentiments.Types;
 
 namespace Hotel.Profile.Converters
 {
 
-    public class ListToRepeatedConverter : ITypeConverter<List<Hotel.Dto.List.dto.HotelListReadDto>, RepeatedField<Hotels.GRPCHotelListReadDto>>
+    public class ListToRepeatedConverter : ITypeConverter<List<HotelListReadDto>, RepeatedField<Hotels.GRPCHotelListReadDto>>
     {
-        public RepeatedField<Hotels.GRPCHotelListReadDto> Convert(List<Hotel.Dto.List.dto.HotelListReadDto> source, RepeatedField<Hotels.GRPCHotelListReadDto> destination, ResolutionContext context)
+        public RepeatedField<Hotels.GRPCHotelListReadDto> Convert(List<HotelListReadDto> source, RepeatedField<Hotels.GRPCHotelListReadDto> destination, ResolutionContext context)
         {
             var repeated = new RepeatedField<Hotels.GRPCHotelListReadDto>();
 
@@ -19,9 +20,9 @@ namespace Hotel.Profile.Converters
     }
 
 
-    public class ListToRepeatedHotelSentiments : ITypeConverter<List<Hotel.Dto.ratings.dto.HotelSentimentsReadDto>, RepeatedField<GRPCHotelSentimentsReadDto>>
+    public class ListToRepeatedHotelSentiments : ITypeConverter<List<HotelSentimentsReadDto>, RepeatedField<GRPCHotelSentimentsReadDto>>
     {
-        public RepeatedField<GRPCHotelSentimentsReadDto> Convert(List<Hotel.Dto.ratings.dto.HotelSentimentsReadDto> source, RepeatedField<GRPCHotelSentimentsReadDto> destination, ResolutionContext context)
+        public RepeatedField<GRPCHotelSentimentsReadDto> Convert(List<HotelSentimentsReadDto> source, RepeatedField<GRPCHotelSentimentsReadDto> destination, ResolutionContext context)
         {
             var repeated = new RepeatedField<GRPCHotelSentimentsReadDto>();
 

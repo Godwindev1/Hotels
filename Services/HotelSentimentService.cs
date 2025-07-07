@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Google.Protobuf.Collections;
 using Grpc.Core;
-using Hotel.Dto.ratings.dto;
 using Hotel.Logging;
 using Hotel.model;
-using Hotel.Model;
+using Hotel.Model.AmadeusV1;
 using Hotel.Services.data;
 using Hotel.SyncServices;
 using Hotel.Utility;

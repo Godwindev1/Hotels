@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using AutoMapper;
 using Hotel.Amadeus;
 using Hotel.Logging;
@@ -25,7 +26,7 @@ namespace Hotel
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 
-             builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>().ConfigurePrimaryHttpMessageHandler(() =>
+           /*  builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>().ConfigurePrimaryHttpMessageHandler(() =>
                   {
                       var handler = new HttpClientHandler();
 
@@ -47,11 +48,16 @@ namespace Hotel
                       };
 
                       return handler;
-                  });   
+                  });   */
 
-            //builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
+            builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
 
 
+            builder.Services.AddApiVersioning(options => {
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(1.0);
+              //  options.AssumeDefaultVersionWhenUnspecified = true;
+              });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -64,9 +70,9 @@ namespace Hotel
 
 
 
-             builder.WebHost.ConfigureKestrel(options =>
+            builder.WebHost.ConfigureKestrel(options =>
             {
-               options.ConfigureHttpsDefaults(httpsOptions =>
+               /* options.ConfigureHttpsDefaults(httpsOptions =>
                 {                     
                     var certPath = "/etc/ssl/certs/tls.crt";
                     var keyPath =  "/etc/ssl/certs/tls.key";
@@ -76,7 +82,7 @@ namespace Hotel
                     httpsOptions.ServerCertificate = X509Certificate2.CreateFromPemFile(certPath, keyPath);
                     httpsOptions.ServerCertificate = X509Certificate2.CreateFromPemFile(certPath, keyPath);
 
-                });
+                }); */
 
 
                 options.Listen(IPAddress.Any, 5001, listenOptions =>
