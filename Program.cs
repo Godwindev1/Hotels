@@ -49,7 +49,7 @@ namespace Hotel
                       return handler;
                   });   
 
-            builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
+            //builder.Services.AddHttpClient<IHttpClient, HttpClientImplementation>();
 
 
 
@@ -84,7 +84,7 @@ namespace Hotel
                     listenOptions.Protocols = HttpProtocols.Http1AndHttp2; // both HTTP/1.1 and HTTP/2
                     listenOptions.UseHttps(); // gRPC requires HTTPS
                 });
-            });  
+            });   
 
             var app = builder.Build();
 

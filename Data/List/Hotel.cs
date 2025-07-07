@@ -23,6 +23,8 @@ namespace Hotel.Resource.HotelList
         public List<string>? amenities { get; set; }
 
         public DateTime lastUpdate { get; set; }
+
+        public int rating { get; set; }
     }
 
 
